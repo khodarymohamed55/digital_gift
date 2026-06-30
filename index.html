@@ -2,40 +2,38 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>ذكرياتنا الجميلة 💕</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <title>حكايتنا 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;600&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #ffeef2; color: #c2185b; font-family: 'Cairo', sans-serif; text-align: center; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .box { background: white; padding: 30px; border-radius: 30px; box-shadow: 0 10px 30px rgba(233, 30, 99, 0.15); width: 100%; max-width: 400px; }
-        input { width: 80%; padding: 15px; margin: 15px 0; border: 2px solid #f8bbd0; border-radius: 20px; text-align: center; font-size: 18px; }
-        button { background: #e91e63; color: white; border: none; padding: 12px 30px; border-radius: 20px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        .pink-bg { background: linear-gradient(135deg, #ff80ab, #ec407a); color: white; padding: 20px; border-radius: 20px; margin-top: 20px; }
-        .timer { font-size: 20px; font-weight: bold; margin: 15px 0; }
+        body { background: #0f0f12; color: #fff; font-family: 'Cairo', sans-serif; text-align: center; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .container { background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 25px; backdrop-filter: blur(10px); width: 100%; max-width: 400px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .counter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+        .box { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; font-size: 14px; }
+        .box span { display: block; font-size: 18px; font-weight: bold; color: #ff4081; }
+        input { background: rgba(255,255,255,0.1); border: none; padding: 12px; width: 80%; border-radius: 15px; color: white; margin-bottom: 10px; text-align: center; }
+        button { background: #ff4081; border: none; padding: 10px 30px; border-radius: 20px; color: white; font-weight: bold; cursor: pointer; }
         .hidden { display: none; }
-        img { width: 100px; margin-bottom: 20px; }
+        audio { margin-top: 20px; width: 100%; filter: invert(1); }
     </style>
 </head>
 <body>
 
-    <div id="login" class="box">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Gift">
-        <h2>أهلاً بكِ في صندوق الذكريات 💖</h2>
-        <input type="password" id="pass" placeholder="أدخلي كلمة السر">
+    <div id="login" class="container">
+        <h2>أهلاً بكِ في حكايتنا 🎁</h2>
+        <input type="password" id="pass" placeholder="كلمة السر">
         <br>
         <button onclick="check()">فتح الصندوق 💌</button>
-        <p id="error" style="color: red;"></p>
+        <p id="error" style="color: #ff4081;"></p>
     </div>
 
-    <div id="gift" class="box hidden">
-        <img src="https://cdn-icons-png.flaticon.com/512/616/616490.png" alt="Star">
-        <h2>مبروك فتحتِ الهدية بالكامل! 🎁</h2>
-        <div class="pink-bg">
-            <p>سوا من 19-07-2021 👩‍❤️‍👨</p>
-            <div class="timer" id="timer"></div>
-            <p>كل لحظة معاكي ليها طعم تاني ✨</p>
+    <div id="gift" class="container hidden">
+        <h2>بداية حكايتنا 😍❤️</h2>
+        <div class="counter-grid" id="timer">
+            </div>
+        <div class="box">
+            <p>I love you, Today, Tomorrow, And always. ✨</p>
         </div>
-        <br>
-        <audio id="music" controls style="width: 100%;">
+        <audio id="music" controls>
             <source src="https://voca.ro/1cSStP1KJ5AU.mp3" type="audio/mpeg">
         </audio>
     </div>
@@ -46,20 +44,32 @@
                 document.getElementById('login').classList.add('hidden');
                 document.getElementById('gift').classList.remove('hidden');
             } else {
-                document.getElementById('error').innerText = 'كلمة السر غير صحيحة ❌';
+                document.getElementById('error').innerText = 'كلمة السر غير صحيحة';
             }
         }
 
         function update() {
             const start = new Date("2021-07-19T00:00:00");
-            const diff = new Date() - start;
-            const d = Math.floor(diff / 86400000);
-            const h = Math.floor((diff % 86400000) / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            document.getElementById('timer').innerHTML = `${d} يوم و ${h} ساعة و ${m} دقيقة`;
+            const now = new Date();
+            const diff = now - start;
+            
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(months / 12);
+
+            document.getElementById('timer').innerHTML = `
+                <div class="box"><span>${years}</span>سنين</div>
+                <div class="box"><span>${months % 12}</span>شهور</div>
+                <div class="box"><span>${days % 30}</span>أيام</div>
+                <div class="box"><span>${hours % 24}</span>ساعات</div>
+                <div class="box"><span>${minutes % 60}</span>دقايق</div>
+                <div class="box"><span>${seconds % 60}</span>ثواني</div>
+            `;
         }
         setInterval(update, 1000);
-        update();
     </script>
 </body>
 </html>
