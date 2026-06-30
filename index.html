@@ -1,298 +1,194 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ذكرياتنا الجميلة ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 400px;
+            width: 90%;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+        .icon-box {
+            font-size: 80px;
+            color: #e91e63;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #e91e63;
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+            transition: 0.3s;
+        }
+        .btn:hover { transform: scale(1.05); }
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 22px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #e91e63;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        .error { color: #ff3333; font-size: 14px; margin-bottom: 15px; }
+        .gift-circle {
+            width: 160px;
+            height: 160px;
+            background: rgba(233, 30, 99, 0.1);
+            border: 2px solid #e91e63;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+            font-size: 70px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(233, 30, 99, 0.3);
+            transition: 0.3s;
+        }
+        .gift-circle:hover { transform: scale(1.05); }
+        .msg-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .timer-box {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 18px;
+            color: #ffd700;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
 
-void main() {
-  runApp(const DigitalGiftApp());
-}
+    <div id="passwordScreen" class="container">
+        <div class="icon-box">🔑</div>
+        <h2>ادخل كلمة السر لفتح الصندوق ✨</h2>
+        <input type="password" id="passInput" placeholder="••••" maxlength="4">
+        <div id="errorMsg" class="error"></div>
+        <button class="btn" onclick="checkPassword()">افتح الهدية 🎁</button>
+    </div>
 
-class DigitalGiftApp extends StatelessWidget {
-  const DigitalGiftApp({Key? key}) : super(key: key);
+    <div id="giftScreen" class="container hidden">
+        <h2 style="font-size: 20px; margin-bottom: 30px;">أهلاً بك في صندوق الذكريات الرقمي 🎁</h2>
+        <div class="gift-circle" onclick="nextMessage()">🎁</div>
+        <div id="msgBox" class="msg-box">كل لحظة معاك ليها طعم تاني... ✨</div>
+        <div id="counterTxt" style="font-size: 12px; color: #888;">اضغط على الصندوق لفتح الرسالة التالية (1/4)</div>
+    </div>
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ذكرياتنا الجميلة ✨',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.pink,
-        fontFamily: 'Cairo',
-      ),
-      home: const PasswordScreen(),
-    );
-  }
-}
+    <div id="finalScreen" class="container hidden">
+        <div style="font-size: 80px; color: #ffd700;">🌟</div>
+        <h2 style="color: #ffd700; font-size: 24px;">🎉 مبروك فتحت الهدية بالكامل! 🎉</h2>
+        
+        <div class="timer-box">
+            <div>الـوقـت الـمـتـبـقـي عـلـى مـنـاسـبـتـنـا: ⏳</div>
+            <div id="timer" style="margin-top: 10px;">جاري الحساب...</div>
+        </div>
 
-// 1️⃣ شاشة قفل الباسورد
-class PasswordScreen extends StatefulWidget {
-  const PasswordScreen({Key? key}) : super(key: key);
+        <p style="font-size: 16px; margin-top: 25px; line-height: 1.6;">
+            موقعك اشتغل بنجاح على السيرفر! 💻✨<br>دي البداية بس والقادم أقوى بكتير يا صاحبي.
+        </p>
+        <button class="btn" style="margin-top: 20px;" onclick="restartApp()">إعادة تشغيل الصندوق</button>
+    </div>
 
-  @override
-  State<PasswordScreen> createState() => _PasswordScreenState();
-}
+    <script>
+        const targetDate = new Date(2027, 0, 1, 0, 0, 0); 
 
-class _PasswordScreenState extends State<PasswordScreen> {
-  final TextEditingController _passwordController = TextEditingController();
-  String _errorMessage = '';
+        const messages = [
+            "كل لحظة معاك ليها طعم تاني... ✨",
+            "جمعتنا ذكريات مابتتنسيش، والجاية أجمل بكتير إن شاء الله 💖",
+            "الهدية دي حاجة بسيطة تعبر عن غلاوتك عندي يا غالي وبداية لرحلة نجاح جديدة 🚀",
+            "اضغط كمان مرة عشان تشوف المفاجأة الكبيرة والعداد! 🎉"
+        ];
+        
+        let currentMsgIndex = 0;
 
-  void _checkPassword() {
-    // الباسورد الجديد اللي طلبته هو 2007
-    if (_passwordController.text == '2007') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const GiftHomeScreen()),
-      );
-    } else {
-      setState(() {
-        _errorMessage = 'كلمة السر غير صحيحة، حاول تاني يا غالي! ❌';
-      });
-    }
-  }
+        function checkPassword() {
+            const input = document.getElementById('passInput').value;
+            if(input === '2007') {
+                document.getElementById('passwordScreen').classList.add('hidden');
+                document.getElementById('giftScreen').classList.remove('hidden');
+            } else {
+                document.getElementById('errorMsg').innerText = 'كلمة السر غير صحيحة، حاول تاني يا غالي! ❌';
+            }
+        }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0B0F19),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.lock_outline, size: 80, color: Colors.pink),
-              const SizedBox(height: 20),
-              const Text(
-                'ادخل كلمة السر لفتح الصندوق 🔑',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                textAlign: Center,
-                keyboardType: TextInputType.number,
-                style: const TextStyle(fontSize: 22, color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: '••••',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.05),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(color: Colors.pink),
-                  ),
-                ),
-              ),
-              if (_errorMessage.isNotEmpty) ...[
-                const SizedBox(height: 15),
-                Text(_errorMessage, style: const TextStyle(color: Colors.red, fontSize: 14)),
-              ],
-              const SizedBox(height: 25),
-              ElevatedButton(
-                onPressed: _checkPassword,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.pink,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                ),
-                child: const Text('افتح الهدية 🎁', style: TextStyle(fontSize: 16)),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+        function nextMessage() {
+            if (currentMsgIndex < messages.length - 1) {
+                currentMsgIndex++;
+                document.getElementById('msgBox').innerText = messages[currentMsgIndex];
+                document.getElementById('counterTxt').innerText = `اضغط على الصندوق لفتح الرسالة التالية (${currentMsgIndex + 1}/${messages.length})`;
+            } else {
+                document.getElementById('giftScreen').classList.add('hidden');
+                document.getElementById('finalScreen').classList.remove('hidden');
+                startCountdown();
+            }
+        }
 
-// 2️⃣ الشاشة الرئيسية والتعداد والرسائل التفاعلية
-class GiftHomeScreen extends StatefulWidget {
-  const GiftHomeScreen({Key? key}) : super(key: key);
+        function startCountdown() {
+            function updateTimer() {
+                const now = new Date().getTime();
+                const diff = targetDate - now;
 
-  @override
-  State<GiftHomeScreen> createState() => _GiftHomeScreenState();
-}
+                if (diff <= 0) {
+                    document.getElementById('timer').innerText = "وصلنا للمناسبة السعيدة! 🎉";
+                    return;
+                }
 
-class _GiftHomeScreenState extends State<GiftHomeScreen> {
-  int _clickCount = 0;
-  bool _showFinalSurprise = false;
-  late Timer _timer;
-  Duration _duration = const Duration();
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-  // 🔴 عـــدل الـتـاريــخ هــنــا 🔴
-  // غير الأرقام دي بالترتيب: (السنة, الشهر, اليوم, الساعة, الدقيقة)
-  final DateTime targetDate = DateTime(2027, 1, 1, 0, 0); 
+                document.getElementById('timer').innerText = `${days} يوم و ${hours} ساعة و ${minutes} دقيقة و ${seconds} ثانية`;
+            }
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
 
-  final List<String> _messages = [
-    "كل لحظة معاك ليها طعم تاني... ✨",
-    "جمعتنا ذكريات مابتتنسيش، والجاية أجمل بكتير إن شاء الله 💖",
-    "الهدية دي حاجة بسيطة تعبر عن غلاوتك عندي يا غالي وبداية لرحلة نجاح جديدة 🚀",
-    "اضغط كمان مرة عشان تشوف المفاجأة الكبيرة والعداد! 🎉"
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _startTimer();
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      final now = DateTime.now();
-      setState(() {
-        _duration = targetDate.isAfter(now) ? targetDate.difference(now) : const Duration();
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
-  void _handleBoxClick() {
-    setState(() {
-      if (_clickCount < _messages.length - 1) {
-        _clickCount++;
-      } else {
-        _showFinalSurprise = true;
-      }
-    });
-  }
-
-  String _formatDuration(Duration d) {
-    final days = d.inDays;
-    final hours = d.inHours % 24;
-    final minutes = d.inMinutes % 60;
-    final seconds = d.inSeconds % 60;
-    return "$days يوم و $hours ساعة و $minutes دقيقة و $seconds ثانية";
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0B0F19),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 500),
-              child: !_showFinalSurprise
-                  ? Column(
-                      key: ValueKey<int>(_clickCount),
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text(
-                          "أهلاً بك في صندوق الذكريات الرقمي 🎁",
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
-                          textAlign: Center,
-                        ),
-                        const SizedBox(height: 30),
-                        GestureDetector(
-                          onTap: _handleBoxClick,
-                          child: Container(
-                            padding: const EdgeInsets.all(40),
-                            decoration: BoxDecoration(
-                              color: Colors.pink.withOpacity(0.1),
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.pink, width: 2),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.pink.withOpacity(0.3),
-                                  blurRadius: 20,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: const Icon(Icons.card_giftcard, size: 80, color: Colors.pink),
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.05),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Text(
-                            _messages[_clickCount],
-                            style: const TextStyle(fontSize: 18, color: Colors.white70, height: 1.5),
-                            textAlign: Center,
-                            textDirection: TextDirection.rtl,
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        Text(
-                          "اضغط على الصندوق لفتح الرسالة التالية (${_clickCount + 1}/${_messages.length})",
-                          style: const TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
-                      ],
-                    )
-                  : Column(
-                      key: const ValueKey<String>("surprise"),
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.stars, size: 100, color: Colors.amber),
-                        const SizedBox(height: 20),
-                        const Text(
-                          "🎉 مبروك فتحت الهدية بالكامل! 🎉",
-                          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.amber),
-                          textAlign: Center,
-                        ),
-                        const SizedBox(height: 25),
-                        Container(
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: Colors.amber.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(color: Colors.amber.withOpacity(0.5)),
-                          ),
-                          child: Column(
-                            children: [
-                              const Text(
-                                "الـوقـت الـمـتـبـقـي عـلـى مـنـاسـبـتـنـا: ⏳",
-                                style: TextStyle(fontSize: 16, color: Colors.white70, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                _formatDuration(_duration),
-                                style: const TextStyle(fontSize: 18, color: Colors.amber, fontWeight: FontWeight.bold),
-                                textAlign: Center,
-                                textDirection: TextDirection.rtl,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 25),
-                        const Text(
-                          "موقعك اشتغل بنجاح على سيرفر فلاتر ويب! 💻✨\nدي البداية بس والقادم أقوى بكتير يا صاحبي.",
-                          style: TextStyle(fontSize: 18, color: Colors.white, height: 1.6),
-                          textAlign: Center,
-                          textDirection: TextDirection.rtl,
-                        ),
-                        const SizedBox(height: 30),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            setState(() {
-                              _clickCount = 0;
-                              _showFinalSurprise = false;
-                            });
-                          },
-                          icon: const Icon(Icons.refresh),
-                          label: const Text("إعادة تشغيل الصندوق"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.pink,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+        function restartApp() {
+            currentMsgIndex = 0;
+            document.getElementById('passInput').value = '';
+            document.getElementById('errorMsg').innerText = '';
+            document.getElementById('finalScreen').classList.add('hidden');
+            document.getElementById('passwordScreen').classList.remove('hidden');
+            document.getElementById('msgBox').innerText = messages[0];
+            document.getElementById('counterTxt').innerText = `اضغط على الصندوق لفتح الرسالة التالية (1/4)`;
+        }
+    </script>
+</body>
+</html>
