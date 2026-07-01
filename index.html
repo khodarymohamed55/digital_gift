@@ -2,74 +2,62 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>حكايتنا 💖</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;600&display=swap" rel="stylesheet">
+    <title>هدية خاصة 💌</title>
     <style>
-        body { background: #0f0f12; color: #fff; font-family: 'Cairo', sans-serif; text-align: center; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .container { background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 25px; backdrop-filter: blur(10px); width: 100%; max-width: 400px; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .counter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
-        .box { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; font-size: 14px; }
-        .box span { display: block; font-size: 18px; font-weight: bold; color: #ff4081; }
-        input { background: rgba(255,255,255,0.1); border: none; padding: 12px; width: 80%; border-radius: 15px; color: white; margin-bottom: 10px; text-align: center; }
-        button { background: #ff4081; border: none; padding: 10px 30px; border-radius: 20px; color: white; font-weight: bold; cursor: pointer; }
-        .hidden { display: none; }
-        audio { margin-top: 20px; width: 100%; filter: invert(1); }
+        body { background-color: #fce4ec; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 85%; }
+        input { width: 80%; padding: 10px; margin: 20px 0; border: 2px solid #f8bbd0; border-radius: 10px; text-align: center; }
+        button { background: #e91e63; color: white; border: none; padding: 10px 30px; border-radius: 10px; cursor: pointer; }
+        #mainContent { display: none; }
+        .counter { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+        .box { background: #f8bbd0; padding: 10px; border-radius: 10px; width: 60px; }
     </style>
 </head>
 <body>
 
+    <!-- قسم القفل -->
     <div id="login" class="container">
-        <h2>أهلاً بكِ في حكايتنا 🎁</h2>
-        <input type="password" id="pass" placeholder="كلمة السر">
+        <h2>هدية خاصة 💌</h2>
+        <input type="password" id="passInput" placeholder="كلمة السر">
         <br>
-        <button onclick="check()">فتح الصندوق 💌</button>
-        <p id="error" style="color: #ff4081;"></p>
+        <button onclick="checkPassword()">فتح الظرف</button>
     </div>
 
-    <div id="gift" class="container hidden">
-        <h2>بداية حكايتنا 😍❤️</h2>
-        <div class="counter-grid" id="timer">
-            </div>
-        <div class="box">
-            <p>I love you, Today, Tomorrow, And always. ✨</p>
+    <!-- قسم المحتوى -->
+    <div id="mainContent" class="container">
+        <h1>ذكرياتنا ✨</h1>
+        <div class="counter">
+            <div class="box"><span id="days">0</span><br>يوم</div>
+            <div class="box"><span id="hours">0</span><br>ساعة</div>
         </div>
-        <audio id="music" controls>
-            <source src="https://voca.ro/1cSStP1KJ5AU.mp3" type="audio/mpeg">
-        </audio>
+        <p>كل ثانية بحبك أكثر ❤️</p>
     </div>
 
     <script>
-        function check() {
-            if(document.getElementById('pass').value === '2007') {
-                document.getElementById('login').classList.add('hidden');
-                document.getElementById('gift').classList.remove('hidden');
+        function checkPassword() {
+            let pass = document.getElementById("passInput").value;
+            if (pass === "2007") {
+                document.getElementById("login").style.display = "none";
+                document.getElementById("mainContent").style.display = "block";
+                startCounter();
             } else {
-                document.getElementById('error').innerText = 'كلمة السر غير صحيحة';
+                alert("كلمة السر خاطئة!");
             }
         }
 
-        function update() {
-            const start = new Date("2021-07-19T00:00:00");
-            const now = new Date();
-            const diff = now - start;
-            
-            const seconds = Math.floor(diff / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const hours = Math.floor(minutes / 60);
-            const days = Math.floor(hours / 24);
-            const months = Math.floor(days / 30);
-            const years = Math.floor(months / 12);
-
-            document.getElementById('timer').innerHTML = `
-                <div class="box"><span>${years}</span>سنين</div>
-                <div class="box"><span>${months % 12}</span>شهور</div>
-                <div class="box"><span>${days % 30}</span>أيام</div>
-                <div class="box"><span>${hours % 24}</span>ساعات</div>
-                <div class="box"><span>${minutes % 60}</span>دقايق</div>
-                <div class="box"><span>${seconds % 60}</span>ثواني</div>
-            `;
+        function startCounter() {
+            // تاريخ البداية
+            const startDate = new Date("2025-10-03T00:00:00");
+            setInterval(() => {
+                const now = new Date();
+                const diff = now - startDate;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
+                document.getElementById("days").innerText = days;
+                document.getElementById("hours").innerText = hours;
+            }, 1000);
         }
-        setInterval(update, 1000);
     </script>
 </body>
 </html>
